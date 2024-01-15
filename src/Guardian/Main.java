@@ -8,8 +8,10 @@ public class Main {
         SettingsLoader settingsLoader = new SettingsLoader();
         DatabaseConnectionSettings databaseConnectionSettings = settingsLoader.loadDatabaseConnectionSettings();
         ExecutionSettings executionSettings = settingsLoader.loadExecutionSettings();
+        settingsLoader.TryCloseFileInputStream();
 
-
+        DatabaseConnector databaseConnection = new DatabaseConnector(databaseConnectionSettings);
+        
         
     }
 }
