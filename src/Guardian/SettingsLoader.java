@@ -8,7 +8,7 @@ public class SettingsLoader {
     }
     
     public Main.DatabaseConnectionSettings loadDatabaseConnectionSettings() {
-        return new Main.DatabaseConnectionSettings("localhost", 3306, "root", "password", "guardian");
+        return new Main.DatabaseConnectionSettings("localhost", 3306, "root", "password", "guardian", "mysql");
     }
 
     public Main.ExecutionSettings loadExecutionSettings() {
