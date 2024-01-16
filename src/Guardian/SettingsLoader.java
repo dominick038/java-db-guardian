@@ -19,7 +19,6 @@ public class SettingsLoader {
             if(fileInputStream != null)
             {
                 fileInputStream.close();
-
             }
             
         } 
