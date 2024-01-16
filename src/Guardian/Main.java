@@ -13,7 +13,6 @@ public class Main {
         settingsLoader.TryCloseFileInputStream();
 
         DatabaseConnection databaseConnection = new DatabaseConnection(databaseConnectionSettings);
-         
     }
 
     private static void CheckForCommandLineArguments(String[] args) {
