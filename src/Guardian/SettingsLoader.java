@@ -57,20 +57,29 @@ public class SettingsLoader {
         
         if (properties.containsKey("[Database]")) 
         {
-            Main.DatabaseConnectionSettings databaseConnectionSettings = 
             
-            new Main.DatabaseConnectionSettings(
-                properties.getProperty("host"),
-                Integer.parseInt(properties.getProperty("port")),
-                properties.getProperty("usr"),
-                properties.getProperty("pass"),
-                properties.getProperty("db"),
-                properties.getProperty("dbtype")
-            );
+            try 
+            {
+                Main.DatabaseConnectionSettings databaseConnectionSettings = 
+                new Main.DatabaseConnectionSettings(
+                    properties.getProperty("host"),
+                    Integer.parseInt(properties.getProperty("port")),
+                    properties.getProperty("usr"),
+                    properties.getProperty("pass"),
+                    properties.getProperty("db"),
+                    properties.getProperty("dbtype")
+                );
 
-            CheckIfConnectionSettingsAreValid(databaseConnectionSettings);
+                CheckIfConnectionSettingsAreValid(databaseConnectionSettings, "Database");
 
-            return databaseConnectionSettings;
+                return databaseConnectionSettings;
+            }
+            catch (NumberFormatException e) 
+            {
+                System.out.println("Invalid port number or port number not found in [Database] section! \nExiting...");
+                System.exit(1);
+            }
+              
         }
         
         System.out.println("Database connection settings not found! Exiting...");
@@ -83,44 +92,49 @@ public class SettingsLoader {
         System.out.println("Loading execution settings from ini fie...");
         
         if (properties.containsKey("[Execution]")) {
+            
             Main.ExecutionSettings executionSettings = new Main.ExecutionSettings(
                 properties.getProperty("path")
             );
             
-            System.out.println("Checking if execution settings are valid...");
-            if(executionSettings.path() == null || executionSettings.path().isEmpty()) {
-                System.out.println("Invalid execution settings! Missing the following field: path\nExiting...");
-                System.exit(1);
-            }
+            CheckIfConnectionSettingsAreValid(executionSettings, "Execution");
 
             return executionSettings;
         }
         
         System.out.println("Execution settings not found! Exiting...");
         System.exit(1);
+
         return null;
     }
 
-    private void CheckIfConnectionSettingsAreValid(Main.DatabaseConnectionSettings databaseConnectionSettings) {
-        System.out.println("Checking if connection settings are valid...");
+    private void CheckIfConnectionSettingsAreValid(Object Settings, String keyName) {
+        System.out.println("Checking if ini settings are valid...");
 
-        Class<?> recordClass = databaseConnectionSettings.getClass();
+        boolean isValid = true;
+
+        Class<?> recordClass = Settings.getClass();
 
         for (Field field : recordClass.getDeclaredFields()) {
             try {
                 field.setAccessible(true);
 
-                Object value = field.get(databaseConnectionSettings);
+                Object value = field.get(Settings);
                 
-                if(value == null || value.toString().isEmpty()) {
-                    System.out.println("Invalid settings! Missing the following field: " + field.getName().toString() + "\nExiting...");
-                    System.exit(1);
+                if(value == null || value.toString().isBlank()) {
+                    System.out.println("Invalid settings! Missing the following field: " + field.getName().toString() + " in [" + keyName + "] section!");
+                    isValid = false;
                 }
 
             } catch (IllegalAccessException e) {
                 System.out.println("Error checking settings! Exiting...");
                 System.exit(1);
             }
+        }
+
+        if (!isValid) {
+            System.out.println("Invalid settings! Exiting...");
+            System.exit(1);
         }
 
     }

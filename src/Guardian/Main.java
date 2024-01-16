@@ -10,7 +10,7 @@ public class Main {
         ExecutionSettings executionSettings = settingsLoader.loadExecutionSettings();
         settingsLoader.TryCloseFileInputStream();
 
-        DatabaseConnector databaseConnection = new DatabaseConnector(databaseConnectionSettings);
+        DatabaseConnection databaseConnection = new DatabaseConnection(databaseConnectionSettings);
         
         
     }
