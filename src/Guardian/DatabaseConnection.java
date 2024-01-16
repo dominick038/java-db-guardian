@@ -1,9 +1,8 @@
 package Guardian;
 
-public class DatabaseConnector {
+public class DatabaseConnection {
     
-    
-    public DatabaseConnector(Main.DatabaseConnectionSettings databaseConnectionSettings) {
+    public DatabaseConnection(Main.DatabaseConnectionSettings connectionSettings) {
         System.out.println("Connecting to database...");
     }
 
