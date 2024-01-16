@@ -1,6 +1,7 @@
 ## Getting Started
 
-Welcome to JAVA db guardian, an application that automatically runs the SQL files that have been added into your project if they have not been run yet
+Welcome to Java db guardian, an application that automatically runs the SQL files that have been added into your project if they have not been run yet.
+This exists to keep your database up to date in a project where multiple people will be adding SQL files into the repository, this way you do not have to manually keep track of files anymore.
 
 ## Folder Structure
 
