@@ -7,7 +7,7 @@ import java.util.Properties;
 import java.lang.reflect.Field;
 
 public class SettingsLoader {
-    static final String iniPath = "./src/Guardian/guardian.ini";
+    static final String iniPath = "./guardian.ini";
     Properties properties = new Properties();
     FileInputStream fileInputStream;
 
