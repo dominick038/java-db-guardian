@@ -27,7 +27,9 @@ public class DatabaseConnection {
         }
         catch (SQLException e)
         {
-            System.out.println("Error connecting to the database. Exiting...");
+            System.out.println("Error connecting to database...");
+            System.out.println("Error-message: " + e.getMessage());
+            System.out.println("Exiting...");
             System.exit(1);
         }
 
