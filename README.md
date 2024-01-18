@@ -18,4 +18,4 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 
 This project is dependent on the following packages.
 
-> MariaDB Connector/J 3.3.2
+- MariaDB Connector/J 3.3.2
