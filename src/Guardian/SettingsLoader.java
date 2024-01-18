@@ -119,7 +119,7 @@ public class SettingsLoader {
                 field.setAccessible(true);
 
                 Object value = field.get(Settings);
-                
+
                 if(value == null || value.toString().isBlank()) {
                     System.out.println("Invalid settings! Missing the following field: " + field.getName().toString() + " in [" + keyName + "] section!");
                     isValid = false;

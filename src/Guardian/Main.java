@@ -8,12 +8,20 @@ public class Main {
         CommandLineHandler.HandleCommand(args);
 
         SettingsLoader settingsLoader = new SettingsLoader();
+        
         DatabaseConnectionSettings databaseConnectionSettings = settingsLoader.loadDatabaseConnectionSettings();
-        //ExecutionSettings executionSettings = settingsLoader.loadExecutionSettings();
+        ExecutionSettings executionSettings = settingsLoader.loadExecutionSettings();
         
         settingsLoader.TryCloseFileInputStream();
 
-        DatabaseConnection databaseConnection = new DatabaseConnection(databaseConnectionSettings);
+
+        DatabaseConnection conn = new DatabaseConnection(databaseConnectionSettings);
+        conn.ExecuteQuery("SELECT * FROM RandomTable;");
+
+        conn.Close();
+        
+        System.out.println("Execution finished. Your database should be updated.");
+        System.exit(0);
     }
 }
 
