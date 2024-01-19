@@ -1,7 +1,20 @@
 package Guardian;
 
+import java.lang.annotation.*;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@interface RequiredFields {
+    String[] value() default {};
+}
+
+
 public class Main {
+    
+    @RequiredFields({"host", "port", "usr", "db", "dbtype"})
     public record DatabaseConnectionSettings(String host, int port, String usr, String pass, String db, String dbtype) {}
+    
+    @RequiredFields({"path"})
     public record ExecutionSettings(String path) {}
 
     public static void main(String[] args) throws Exception {
@@ -10,7 +23,6 @@ public class Main {
         SettingsLoader settingsLoader = new SettingsLoader();
         
         DatabaseConnectionSettings databaseConnectionSettings = settingsLoader.loadDatabaseConnectionSettings();
-        //ExecutionSettings executionSettings = settingsLoader.loadExecutionSettings();
         
         settingsLoader.TryCloseFileInputStream();
 

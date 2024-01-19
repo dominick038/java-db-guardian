@@ -13,6 +13,10 @@ public class DatabaseConnection {
     public DatabaseConnection(Main.DatabaseConnectionSettings connectionSettings) {
         System.out.println("Connecting to database...");
 
+        if(connectionSettings.pass().isEmpty()) { 
+            System.out.println("\u001B[31mWarning: password is empty. This is not recommended!\u001B[0m");
+        }
+        
         String connectionUrl = 
             "jdbc:" + connectionSettings.dbtype() +
             "://" + connectionSettings.host() + 

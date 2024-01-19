@@ -8,8 +8,8 @@ import java.lang.reflect.Field;
 
 public class SettingsLoader {
     static final String iniPath = "./guardian.ini";
-    Properties properties = new Properties();
-    FileInputStream fileInputStream;
+    private Properties properties = new Properties();
+    private FileInputStream fileInputStream;
 
     public void TryCloseFileInputStream() {
         System.out.println("Closing ini file...");
@@ -113,20 +113,29 @@ public class SettingsLoader {
         boolean isValid = true;
 
         Class<?> recordClass = Settings.getClass();
-
-        for (Field field : recordClass.getDeclaredFields()) {
+        
+        String[] requiredFieldsAnnotation = recordClass.getAnnotation(RequiredFields.class).value();
+        for (String fieldName : requiredFieldsAnnotation) {
             try {
+                
+                Field field = recordClass.getDeclaredField(fieldName);
+                
                 field.setAccessible(true);
 
                 Object value = field.get(Settings);
 
-                if(value == null || value.toString().isBlank()) {
-                    System.out.println("Invalid settings! Missing the following field: " + field.getName().toString() + " in [" + keyName + "] section!");
-                    isValid = false;
+                if (value == null || value.toString().isBlank()) {
+                    System.out.println("Invalid settings! Missing the following required field: " + fieldName + " in [" + keyName + "] section!");
+                    System.exit(1);
                 }
-
-            } catch (IllegalAccessException e) {
-                System.out.println("Error checking settings! Exiting...");
+                
+            } 
+            catch (IllegalAccessException e) {
+                System.out.println("Error checking settings: Access violation! Exiting...");
+                System.exit(1);
+            }
+            catch (NoSuchFieldException e) {
+                System.out.println("Error checking settings: No such field! Exiting...");
                 System.exit(1);
             }
         }
