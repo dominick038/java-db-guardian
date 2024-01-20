@@ -13,10 +13,8 @@ public class DatabaseConnection {
     public DatabaseConnection(Main.DatabaseConnectionSettings connectionSettings) {
         System.out.println("Connecting to database...");
 
-        if(connectionSettings.pass().isEmpty()) { 
-            System.out.println("\u001B[31mWarning: password is empty. This is not recommended!\u001B[0m");
-        }
         
+
         String connectionUrl = 
             "jdbc:" + connectionSettings.dbtype() +
             "://" + connectionSettings.host() + 
@@ -26,7 +24,11 @@ public class DatabaseConnection {
         
         try
         {
-            conn = DriverManager.getConnection(connectionUrl, connectionSettings.usr(), "");
+            if(connectionSettings.pass().isBlank()) { 
+                System.out.println("\u001B[31mWarning: password is empty. This is not recommended!\u001B[0m");
+            }
+
+            conn = DriverManager.getConnection(connectionUrl, connectionSettings.usr(), connectionSettings.pass());
             System.out.println("Connected to the database");
         }
         catch (SQLException e)

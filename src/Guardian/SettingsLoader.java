@@ -29,6 +29,34 @@ public class SettingsLoader {
         }
     }
 
+    public static String[] GetGuardianProperties() {
+        System.out.println("Getting guardian properties...");
+        Properties loadedGuardianProps = new Properties();
+        
+        String[] guardianProperties = new String[2];
+        try 
+        {
+            FileInputStream propStream = new FileInputStream("./src/Guardian/guardian.properties");
+            loadedGuardianProps.load(propStream);
+
+            guardianProperties[0] = loadedGuardianProps.getProperty("guardian.lastrun");
+            guardianProperties[1] = loadedGuardianProps.getProperty("guardian.initialized");
+
+            propStream.close();
+        }
+        catch (FileNotFoundException e) 
+        {
+            System.out.println("Guardian properties file not found! Exiting...");
+            System.exit(1);
+        }
+        catch (IOException e) 
+        {
+            System.out.println("Error reading guardian properties file! Exiting...");
+            System.exit(1);
+        }
+        
+        return guardianProperties;
+    }
 
     public SettingsLoader() {
         System.out.println("Opening ini file...");
@@ -50,7 +78,7 @@ public class SettingsLoader {
         }
         
     }
-    
+
     public Main.DatabaseConnectionSettings loadDatabaseConnectionSettings() {
         System.out.println("Loading database connection settings from ini fie...");
         
@@ -113,8 +141,8 @@ public class SettingsLoader {
         boolean isValid = true;
 
         Class<?> recordClass = Settings.getClass();
-        
         String[] requiredFieldsAnnotation = recordClass.getAnnotation(RequiredFields.class).value();
+        
         for (String fieldName : requiredFieldsAnnotation) {
             try {
                 
