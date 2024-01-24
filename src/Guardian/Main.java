@@ -39,7 +39,6 @@ public class Main {
         DatabaseConnectionSettings databaseConnectionSettings = settingsLoader.loadDatabaseConnectionSettings();
         settingsLoader.TryCloseFileInputStream();
 
-
         DatabaseConnection conn = new DatabaseConnection(databaseConnectionSettings);
         conn.ExecuteQuery("SELECT * FROM RandomTable;");
         conn.Close();

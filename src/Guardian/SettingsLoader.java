@@ -40,6 +40,8 @@ public class SettingsLoader {
      * Retrieves the guardian properties from the guardian.properties file.
      * The properties include the last run timestamp and the initialization status.
      * 
+     * @arrayItems item 0: last run timestamp
+     * @arrayItems item 1: initialization status
      * @return an array of strings containing the guardian properties
      */
     public static String[] GetGuardianProperties() {
