@@ -11,13 +11,14 @@ import java.lang.annotation.*;
 public class Main {
     
     @RequiredFields({"host", "port", "usr", "db", "dbtype"})
-    public record DatabaseConnectionSettings(String host, int port, String usr, String pass, String db, String dbtype) {}
+    protected record DatabaseConnectionSettings(String host, int port, String usr, String pass, String db, String dbtype) {}
     
     @RequiredFields({"path"})
-    public record ExecutionSettings(String path) {}
+    protected record ExecutionSettings(String path) {}
 
     public static void main(String[] args) throws Exception {
         CommandLineHandler.HandleCommand(args);
+        
         String[] guardianProperties = SettingsLoader.GetGuardianProperties();
 
         if(Integer.parseInt(guardianProperties[1]) == 0) {
