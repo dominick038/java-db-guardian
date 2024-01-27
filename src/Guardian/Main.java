@@ -28,22 +28,20 @@ public class Main {
         }
 
         SettingsLoader settingsLoader = new SettingsLoader();
-
+    
         ExecutionSettings executionSettings = settingsLoader.loadExecutionSettings();
-        
-        if(!FileReader.ShouldProgramRun(guardianProperties[0], executionSettings.path())) {
-            settingsLoader.TryCloseFileInputStream();
-            System.out.println("Exiting...");
-            System.exit(0);
-        };
-        
         DatabaseConnectionSettings databaseConnectionSettings = settingsLoader.loadDatabaseConnectionSettings();
         settingsLoader.TryCloseFileInputStream();
 
-        DatabaseConnection conn = new DatabaseConnection(databaseConnectionSettings);
-        conn.ExecuteQuery("SELECT * FROM RandomTable;");
-        conn.Close();
-    
+        FileReader fr = new FileReader(guardianProperties[0], executionSettings.path());
+        fr.ShouldProgramRun();
+        
+        
+        // DatabaseConnection conn = new DatabaseConnection(databaseConnectionSettings);
+        // conn.ExecuteQuery("SELECT * FROM RandomTable;");
+        // conn.Close();
+        
+        System.out.println("");
         System.out.println("Execution finished. Your database should be updated.");
         System.exit(0);
     }

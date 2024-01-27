@@ -1,31 +1,52 @@
 package Guardian;
 
 import java.io.IOException;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.format.DateTimeParseException;
+import java.util.Vector;
 
 public class FileReader {
-    public FileReader() {
-        System.out.println("Reading files and directories...");
+    private Vector<String> updatedDirectories = new Vector<String>();
+    private int lastRun;
+    private String path;
+
+    public FileReader(String lastRun, String path) {
+        this.lastRun = Integer.parseInt(lastRun);
+        this.path = path;
+
+        System.out.println("FileReader initialized...");
     }
     
-    public static Boolean ShouldProgramRun(String lastRun, String path) {
+    public Boolean ShouldProgramRun() {
         System.out.println("Checking if program should run...");
        
-        Path dir = Path.of(path);
-        try
+        File[] listOfFiles = new File(path).listFiles();
+        for (File file : listOfFiles) {
+            if (file.isDirectory()) {
+                Path dir = Path.of(file.getAbsolutePath());
+                System.out.println("Checking folder " + dir.getFileName() + "...");
+                ReadFile(dir);
+            }
+        }
+        if(updatedDirectories.size() == 0) {
+            System.out.println("");
+            System.out.println("No updated directories found. Exiting...");
+            System.exit(1);
+        }
+        return true;
+    }
+
+    private void ReadFile(Path dir) {
+        try 
         {
             int folderLastModifiedTime = (int)(Files.getLastModifiedTime(dir).toMillis() / 1000);
-            int lastRunTime = Integer.parseInt(lastRun);
-
-            if(folderLastModifiedTime > lastRunTime) {
-                System.out.println("Running program...");
-                return true;
+            if(folderLastModifiedTime > lastRun) {
+                updatedDirectories.add(dir.toString());
+                System.out.println("Added " + dir.getFileName() + " to the list of directories that have been updated since last run...");
             }
             else {
-                System.out.println("No updates found.");
-                return false;
+                System.out.println("Folder " + dir.getFileName() + " was not modified since last run...");
             }
         }
         catch (IOException e)
@@ -33,13 +54,6 @@ public class FileReader {
             System.out.println("Error reading file! " + e.getMessage());
             System.exit(1);
         }
-        catch (DateTimeParseException e)
-        {
-            System.out.println("Error! " + e.getMessage());
-            System.exit(1);
-        }
         
-        return true;
     }
-
 }
