@@ -5,6 +5,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Vector;
+import java.io.FileInputStream;
 
 public class FileReader {
     private Vector<String> updatedDirectories = new Vector<String>();
@@ -26,7 +27,7 @@ public class FileReader {
             if (file.isDirectory()) {
                 Path dir = Path.of(file.getAbsolutePath());
                 System.out.println("Checking folder " + dir.getFileName() + "...");
-                ReadFile(dir);
+                ReadDirectory(dir);
             }
         }
         if(updatedDirectories.size() == 0) {
@@ -37,7 +38,7 @@ public class FileReader {
         return true;
     }
 
-    private void ReadFile(Path dir) {
+    private void ReadDirectory(Path dir) {
         try 
         {
             int folderLastModifiedTime = (int)(Files.getLastModifiedTime(dir).toMillis() / 1000);
@@ -55,5 +56,11 @@ public class FileReader {
             System.exit(1);
         }
         
+    }
+
+    protected FileInputStream ReadFile() {
+        
+        
+        return null;
     }
 }
