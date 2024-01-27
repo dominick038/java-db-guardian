@@ -13,6 +13,8 @@ public class DatabaseConnection {
     public DatabaseConnection(Main.DatabaseConnectionSettings connectionSettings) {
         System.out.println("Connecting to database...");
 
+        
+
         String connectionUrl = 
             "jdbc:" + connectionSettings.dbtype() +
             "://" + connectionSettings.host() + 
@@ -22,12 +24,18 @@ public class DatabaseConnection {
         
         try
         {
-            conn = DriverManager.getConnection(connectionUrl, connectionSettings.usr(), "");
+            if(connectionSettings.pass().isBlank()) { 
+                System.out.println("\u001B[31mWarning: password is empty. This is not recommended!\u001B[0m");
+            }
+
+            conn = DriverManager.getConnection(connectionUrl, connectionSettings.usr(), connectionSettings.pass());
             System.out.println("Connected to the database");
         }
         catch (SQLException e)
         {
-            System.out.println("Error connecting to the database. Exiting...");
+            System.out.println("Error connecting to database...");
+            System.out.println("Error-message: " + e.getMessage());
+            System.out.println("Exiting...");
             System.exit(1);
         }
 
