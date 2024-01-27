@@ -44,7 +44,7 @@ public class FileReader {
         if(updatedDirectories.size() == 0) {
             System.out.println("");
             System.out.println("No updated directories found. Exiting...");
-            System.exit(1);
+            System.exit(0);
         }
         return true;
     }
