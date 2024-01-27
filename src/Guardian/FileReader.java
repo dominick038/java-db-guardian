@@ -12,6 +12,12 @@ public class FileReader {
     private int lastRun;
     private String path;
 
+    /**
+     * Initializes a new instance of the FileReader class.
+     * 
+     * @param lastRun the timestamp of the last run
+     * @param path the path of the directory to be read
+     */
     public FileReader(String lastRun, String path) {
         this.lastRun = Integer.parseInt(lastRun);
         this.path = path;
@@ -19,6 +25,11 @@ public class FileReader {
         System.out.println("FileReader initialized...");
     }
     
+    /**
+     * Checks if the program should run by scanning the specified directory for updated directories.
+     * 
+     * @return true if the program should run, false otherwise.
+     */
     public Boolean ShouldProgramRun() {
         System.out.println("Checking if program should run...");
        
@@ -38,6 +49,13 @@ public class FileReader {
         return true;
     }
 
+    /**
+     * Reads the contents of a directory and checks if it has been modified since the last run.
+     * If the directory has been modified, it adds the directory path to the list of updated directories.
+     * If the directory has not been modified, it prints a message indicating that the folder was not modified.
+     *
+     * @param dir the path of the directory to be read
+     */
     private void ReadDirectory(Path dir) {
         try 
         {
