@@ -5,7 +5,7 @@ This exists to keep your database up to date in a project where multiple people 
 
 db-guardian will always prioritise the folder called main in the target directory.
 
-> Not the current version does not support delimiter changing
+> Note the current version does not support delimiter changing, this is planned to be released soon
 
 ## Folder Structure
 
