@@ -1,7 +1,6 @@
 package Guardian;
 
 import java.lang.annotation.*;
-import java.sql.SQLException;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
@@ -52,6 +51,7 @@ public class Main {
             
         conn.Close();
         
+        SettingsLoader.SetGuardianLastRun(Integer.toString((int)(System.currentTimeMillis() / 1000)));
         System.out.println("");
         System.out.println("Execution finished. Your database should be updated.");
         System.exit(0);

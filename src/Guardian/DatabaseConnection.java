@@ -1,8 +1,8 @@
 package Guardian;
 
+import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
@@ -29,6 +29,7 @@ public class DatabaseConnection {
             conn.setAutoCommit(false);
             
             System.out.println("Connected to the database");
+            System.out.println("");
         }
         catch (SQLException e)
         {
@@ -53,34 +54,42 @@ public class DatabaseConnection {
         }
     }
 
-    @SuppressWarnings("SQL")
     public void ExecuteQuery(String query) {
         query = query.trim();
        
         try
         {
-            System.out.println("Executing query...");
-            
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.execute();
+            Statement stmt = createBatch(query);
+            stmt.executeBatch();
 
             System.out.println("Query executed, trying to commit...");
             
             conn.commit();
             
             System.out.println("Commit successful...");
+            System.out.println("");
         }
         catch (SQLException e)
         {
-            System.out.println("");
             System.out.println("\u001B[31mError executing query...");
-            System.out.println("Error-message: " + e.getMessage() + "\u001B[0m");
+            System.out.println("Error: " + e.getErrorCode() + " " + e.getMessage() + "\u001B[0m");
             System.out.println("");
 
             rollback();
             System.out.println("Exiting...");
             System.exit(1);
         }
+    }
+
+    private Statement createBatch(String query) throws SQLException {
+        Statement stmt = conn.createStatement();
+        String[] queries = query.split(";");
+        for (String q : queries) {
+            if(!q.isBlank()) {
+                stmt.addBatch(q);
+            }
+        }
+        return stmt;
     }
 
     private void rollback() {

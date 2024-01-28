@@ -100,7 +100,6 @@ public class FileReader {
 
     protected void ReadFilesInDirectory(String dir) 
     {
-        System.out.println("");
         System.out.println("Getting all updated files in directory: " + dir + "...");
         updatedFiles.clear();
 
@@ -120,7 +119,9 @@ public class FileReader {
     protected String getNextFileQuery() {
         try 
         {
-            FileInputStream fis = new FileInputStream(updatedFiles.remove(0));
+            String filePath = updatedFiles.remove(0);
+            System.out.println("Executing SQL file: " + filePath + "...");
+            FileInputStream fis = new FileInputStream(filePath);
             byte[] data = fis.readAllBytes();
             fis.close();
             return new String(data);
