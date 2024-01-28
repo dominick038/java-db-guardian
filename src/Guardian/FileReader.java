@@ -5,12 +5,15 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Vector;
+
 import java.io.FileInputStream;
 
 public class FileReader {
     private Vector<String> updatedDirectories = new Vector<String>();
+    private Vector<String> updatedFiles = new Vector<String>();
     private int lastRun;
     private String path;
+    private int indexOfMainDir = -1;
 
     /**
      * Initializes a new instance of the FileReader class.
@@ -37,6 +40,11 @@ public class FileReader {
         for (File file : listOfFiles) {
             if (file.isDirectory()) {
                 Path dir = Path.of(file.getAbsolutePath());
+                
+                if(dir.getFileName().toString().toLowerCase().equals("main")) {
+                    indexOfMainDir = updatedDirectories.size();
+                }
+                
                 System.out.println("Checking folder " + dir.getFileName() + "...");
                 ReadDirectory(dir);
             }
@@ -59,9 +67,8 @@ public class FileReader {
     private void ReadDirectory(Path dir) {
         try 
         {
-            int folderLastModifiedTime = (int)(Files.getLastModifiedTime(dir).toMillis() / 1000);
-            if(folderLastModifiedTime > lastRun) {
-                updatedDirectories.add(dir.toString());
+            if((int)(Files.getLastModifiedTime(dir).toMillis() / 1000) > lastRun) {
+                updatedDirectories.add(dir.toAbsolutePath().toString());
                 System.out.println("Added " + dir.getFileName() + " to the list of directories that have been updated since last run...");
             }
             else {
@@ -76,9 +83,69 @@ public class FileReader {
         
     }
 
-    protected FileInputStream ReadFile() {
-        
+    protected String getNextUpdatedDirectory() {
+        try 
+        {
+            if (indexOfMainDir != -1) {
+                return updatedDirectories.remove(indexOfMainDir);
+            }
+            
+            return updatedDirectories.remove(0);
+        } 
+        catch (IndexOutOfBoundsException e) 
+        {
+            return null;
+        }
+    }
+
+    protected void ReadFilesInDirectory(String dir) 
+    {
+        System.out.println("Getting all updated files in directory: " + dir + "...");
+        updatedFiles.clear();
+
+        File[] listOfFiles = new File(dir).listFiles();
+        for (File file : listOfFiles) {
+            if (file.isFile()) {
+                Path filePath = Path.of(file.getAbsolutePath());
+                ReadFile(filePath);
+            }
+        }
+    }
+
+    protected Boolean EOF() {
+        return updatedFiles.size() == 0;
+    }
+
+    protected String getNextFileQuery() {
+        try 
+        {
+            String filePath = updatedFiles.remove(0);
+            System.out.println("Executing SQL file: " + filePath + "...");
+            FileInputStream fis = new FileInputStream(filePath);
+            byte[] data = fis.readAllBytes();
+            fis.close();
+            return new String(data);
+        } 
+        catch (IOException e) 
+        {
+            System.out.println("Error reading file! " + e.getMessage());
+            System.exit(1);
+        }
         
         return null;
+    } 
+
+    private void ReadFile(Path filePath) {
+        try 
+        {
+            if((int)(Files.getLastModifiedTime(filePath).toMillis() / 1000) > lastRun) {
+                updatedFiles.add(filePath.toAbsolutePath().toString());
+            }
+        } 
+        catch (IOException e) 
+        {
+            System.out.println("Error reading file! " + e.getMessage());
+            System.exit(1);
+        }
     }
 }

@@ -31,16 +31,27 @@ public class Main {
     
         ExecutionSettings executionSettings = settingsLoader.loadExecutionSettings();
         DatabaseConnectionSettings databaseConnectionSettings = settingsLoader.loadDatabaseConnectionSettings();
+        
         settingsLoader.TryCloseFileInputStream();
 
         FileReader fr = new FileReader(guardianProperties[0], executionSettings.path());
+        
         fr.ShouldProgramRun();
         
+        DatabaseConnection conn = new DatabaseConnection(databaseConnectionSettings);
+
+        String currentDirectory;
+        while ((currentDirectory = fr.getNextUpdatedDirectory()) != null) {
+            fr.ReadFilesInDirectory(currentDirectory);
+
+            while (!fr.EOF()) { 
+                conn.ExecuteQuery(fr.getNextFileQuery());
+            }
+        }
+            
+        conn.Close();
         
-        // DatabaseConnection conn = new DatabaseConnection(databaseConnectionSettings);
-        // conn.ExecuteQuery("SELECT * FROM RandomTable;");
-        // conn.Close();
-        
+        SettingsLoader.SetGuardianLastRun(Integer.toString((int)(System.currentTimeMillis() / 1000)));
         System.out.println("");
         System.out.println("Execution finished. Your database should be updated.");
         System.exit(0);

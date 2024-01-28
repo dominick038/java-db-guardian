@@ -2,10 +2,14 @@ package Guardian;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.lang.reflect.Field;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 public class SettingsLoader {
@@ -35,6 +39,40 @@ public class SettingsLoader {
         }
     }
 
+
+    public static void SetGuardianLastRun(String lastRun) {
+        Properties loadedGuardianProps = new Properties();
+    
+        try (InputStream props = SettingsLoader.class.getResourceAsStream("/Guardian/guardian.properties"))
+        {
+            loadedGuardianProps.load(props);
+            props.close();
+
+            loadedGuardianProps.setProperty("guardian.lastrun", lastRun);
+            Path path = Paths.get(SettingsLoader.class.getResource("/Guardian/guardian.properties").toURI());
+            
+            FileOutputStream out = new FileOutputStream(path.toString());
+            loadedGuardianProps.store(out, null);
+            out.close();
+        }
+        catch (FileNotFoundException e) 
+        {
+            System.out.println("Guardian properties file not found! Exiting...");
+            System.exit(1);
+        }
+        catch (IOException e) 
+        {
+            System.out.println("Error reading guardian properties file! Exiting...");
+            System.exit(1);
+        }
+        catch (URISyntaxException e) 
+        {
+            System.out.println("Error reading guardian properties file! Exiting...");
+            System.exit(1);
+        }
+           
+    }
+    
     
     /**
      * Retrieves the guardian properties from the guardian.properties file.

@@ -1,10 +1,9 @@
 package Guardian;
 
+import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class DatabaseConnection {
     private Connection conn;
@@ -12,8 +11,6 @@ public class DatabaseConnection {
 
     public DatabaseConnection(Main.DatabaseConnectionSettings connectionSettings) {
         System.out.println("Connecting to database...");
-
-        
 
         String connectionUrl = 
             "jdbc:" + connectionSettings.dbtype() +
@@ -29,7 +26,10 @@ public class DatabaseConnection {
             }
 
             conn = DriverManager.getConnection(connectionUrl, connectionSettings.usr(), connectionSettings.pass());
+            conn.setAutoCommit(false);
+            
             System.out.println("Connected to the database");
+            System.out.println("");
         }
         catch (SQLException e)
         {
@@ -55,23 +55,59 @@ public class DatabaseConnection {
     }
 
     public void ExecuteQuery(String query) {
+        query = query.trim();
+       
         try
         {
-            Statement stmt = conn.createStatement();
-            ResultSet res = stmt.executeQuery(query);
+            Statement stmt = createBatch(query);
+            stmt.executeBatch();
 
-            while (res.next())
-            {
-                System.out.print(res.getString(1) + " ");
-                System.out.print(res.getString(2) + " ");
-                System.out.print(res.getString(3) + " ");
-                System.out.println(res.getString(4) + " ");
-            }
-
+            System.out.println("Query executed, trying to commit...");
+            
+            conn.commit();
+            
+            System.out.println("Commit successful...");
+            System.out.println("");
         }
         catch (SQLException e)
         {
-            System.out.println("Error executing query: " + query + "with error: " + e.getMessage() + "\nExiting..");
+            System.out.println("\u001B[31mError executing query...");
+            System.out.println("Error: " + e.getErrorCode() + " " + e.getMessage() + "\u001B[0m");
+            System.out.println("");
+
+            rollback();
+            System.out.println("Exiting...");
+            System.exit(1);
+        }
+    }
+
+    private Statement createBatch(String query) throws SQLException {
+        Statement stmt = conn.createStatement();
+        String[] queries = query.split(";");
+        for (String q : queries) {
+            if(!q.isBlank()) {
+                stmt.addBatch(q);
+            }
+        }
+        return stmt;
+    }
+
+    private void rollback() {
+        try
+        {
+            System.out.println("Rolling back...");
+            conn.rollback();
+            System.out.println("Rollback successful...");
+
+            System.out.println("Gracefully closing connection...");
+            conn.close();
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Error encountered while rolling back...");
+            System.out.println("Error-message: " + e.getMessage());
+            System.out.println("Exiting...");
+
             System.exit(1);
         }
     }
