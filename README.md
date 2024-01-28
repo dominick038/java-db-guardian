@@ -5,6 +5,8 @@ This exists to keep your database up to date in a project where multiple people 
 
 db-guardian will always prioritise the folder called main in the target directory.
 
+> Not the current version does not support delimiter changing
+
 ## Folder Structure
 
 The workspace contains two folders by default, where:
