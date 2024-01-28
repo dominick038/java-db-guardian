@@ -50,8 +50,8 @@ public class SettingsLoader {
 
             loadedGuardianProps.setProperty("guardian.lastrun", lastRun);
             Path path = Paths.get(SettingsLoader.class.getResource("/Guardian/guardian.properties").toURI());
-            System.out.println(path.toString());
-            FileOutputStream out = new FileOutputStream(SettingsLoader.class.getResource("/Guardian/guardian.properties").toURI().toString());
+            
+            FileOutputStream out = new FileOutputStream(path.toString());
             loadedGuardianProps.store(out, null);
             out.close();
         }
