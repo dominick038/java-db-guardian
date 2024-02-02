@@ -37,6 +37,7 @@ public class FileReader {
         System.out.println("Checking if program should run...");
        
         File[] listOfFiles = new File(path).listFiles();
+        
         if(listOfFiles == null) {
             System.out.println("No files found in directory...");
             System.out.println("Exiting...");
@@ -44,10 +45,12 @@ public class FileReader {
         }
         
         for (File file : listOfFiles) {
-            if (file.isDirectory()) {
+            if (file.isDirectory()) 
+            {
                 Path dir = Path.of(file.getAbsolutePath());
                 
-                if(dir.getFileName().toString().toLowerCase().equals("main")) {
+                if(dir.getFileName().toString().toLowerCase().equals("main")) 
+                {
                     indexOfMainDir = updatedDirectories.size();
                 }
                 
@@ -55,11 +58,13 @@ public class FileReader {
                 ReadDirectory(dir);
             }
         }
+        
         if(updatedDirectories.size() == 0) {
             System.out.println("");
             System.out.println("No updated directories found. Exiting...");
             System.exit(0);
         }
+        
         return true;
     }
 
@@ -73,11 +78,13 @@ public class FileReader {
     private void ReadDirectory(Path dir) {
         try 
         {
-            if((int)(Files.getLastModifiedTime(dir).toMillis() / 1000) > lastRun) {
+            if((int)(Files.getLastModifiedTime(dir).toMillis() / 1000) > lastRun) 
+            {
                 updatedDirectories.add(dir.toAbsolutePath().toString());
                 System.out.println("Added " + dir.getFileName() + " to the list of directories that have been updated since last run...");
             }
-            else {
+            else 
+            {
                 System.out.println("Folder " + dir.getFileName() + " was not modified since last run...");
             }
         }
@@ -92,7 +99,8 @@ public class FileReader {
     protected String getNextUpdatedDirectory() {
         try 
         {
-            if (indexOfMainDir != -1) {
+            if (indexOfMainDir != -1) 
+            {
                 return updatedDirectories.remove(indexOfMainDir);
             }
             
@@ -110,8 +118,10 @@ public class FileReader {
         updatedFiles.clear();
 
         File[] listOfFiles = new File(dir).listFiles();
-        for (File file : listOfFiles) {
-            if (file.isFile()) {
+        for (File file : listOfFiles) 
+        {
+            if (file.isFile()) 
+            {
                 Path filePath = Path.of(file.getAbsolutePath());
                 ReadFile(filePath);
             }
@@ -127,9 +137,11 @@ public class FileReader {
         {
             String filePath = updatedFiles.remove(0);
             System.out.println("Executing SQL file: " + filePath + "...");
+            
             FileInputStream fis = new FileInputStream(filePath);
             byte[] data = fis.readAllBytes();
             fis.close();
+            
             return new String(data);
         } 
         catch (IOException e) 
@@ -144,7 +156,8 @@ public class FileReader {
     private void ReadFile(Path filePath) {
         try 
         {
-            if((int)(Files.getLastModifiedTime(filePath).toMillis() / 1000) > lastRun) {
+            if((int)(Files.getLastModifiedTime(filePath).toMillis() / 1000) > lastRun) 
+            {
                 updatedFiles.add(filePath.toAbsolutePath().toString());
             }
         } 
