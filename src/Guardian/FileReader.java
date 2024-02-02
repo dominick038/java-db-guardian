@@ -37,6 +37,12 @@ public class FileReader {
         System.out.println("Checking if program should run...");
        
         File[] listOfFiles = new File(path).listFiles();
+        if(listOfFiles == null) {
+            System.out.println("No files found in directory...");
+            System.out.println("Exiting...");
+            System.exit(0);
+        }
+        
         for (File file : listOfFiles) {
             if (file.isDirectory()) {
                 Path dir = Path.of(file.getAbsolutePath());
